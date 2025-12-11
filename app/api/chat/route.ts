@@ -8,7 +8,8 @@ import { randomUUID } from 'crypto';
 
 export async function POST(request: NextRequest) {
   try {
-    const { message, thread_id } = await request.json();
+    const { message, thread_id, model } = await request.json();
+    console.log(`[API接收] 消息: ${message}, 线程ID: ${thread_id}, 模型: ${model}`);
 
     if (!message || typeof message !== 'string') {
       return NextResponse.json({ error: '无效的消息格式' }, { status: 400 });
@@ -21,6 +22,10 @@ export async function POST(request: NextRequest) {
       typeof thread_id === 'string' && thread_id ? thread_id : randomUUID();
     const threadConfig = { configurable: { thread_id: threadId } };
 
+    // 使用传入的模型或使用默认模型
+    const selectedModel = model || 'qwen3-max';
+    console.log(`[模型选择] 使用模型: ${selectedModel}`);
+
     // 创建流式响应
     const stream = new ReadableStream({
       async start(controller) {
@@ -31,7 +36,11 @@ export async function POST(request: NextRequest) {
           // 参考 demo，使用 streamEvents 获取流式响应
           for await (const event of app.streamEvents(
             { messages: [userMessage] },
-            { version: 'v2', ...threadConfig }
+            { 
+              version: 'v2', 
+              ...threadConfig,
+              configurable: { ...threadConfig.configurable, model: selectedModel }
+            }
           )) {
             if (event.event === 'on_chat_model_stream') {
               const chunk = event.data?.chunk;
@@ -123,3 +132,4 @@ export async function GET(request: NextRequest) {
     },
   });
 }
+

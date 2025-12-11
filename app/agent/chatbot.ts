@@ -13,16 +13,20 @@ import path from 'path';
 import Database from 'better-sqlite3';
 import { initSessionTable } from './db';
 
-// 初始化 Google Gemini 模型
-const model = new ChatOpenAI({
-  model: process.env.OPENAI_MODEL_NAME || 'gemini-3-pro-image-preview',
-  apiKey: process.env.OPENAI_API_KEY,
-  temperature: 0.7,
-  streaming: true, // 启用流式响应
-});
+// 动态创建模型实例的函数
+function createChatModel(modelName: string = 'qwen3-max') {
+  return new ChatOpenAI({
+    model: modelName,
+    apiKey: process.env.OPENAI_API_KEY,
+    temperature: 0.7,
+    streaming: true, // 启用流式响应
+  });
+}
 
 // 聊天节点：处理用户输入并生成回复
-async function chatbotNode(state: typeof MessagesAnnotation.State) {
+async function chatbotNode(state: typeof MessagesAnnotation.State, config?: { configurable?: { model?: string } }) {
+  const modelName = config?.configurable?.model || 'qwen3-max';
+  const model = createChatModel(modelName);
   const response = await model.invoke(state.messages);
   return { messages: [response] };
 }
@@ -267,7 +271,7 @@ if (require.main === module) {
   // 初始化 Google Gemini 模型
   const model = new ChatOpenAI({
     model: process.env.OPENAI_MODEL_NAME || 'gemini-3-pro-image-preview',
-    apiKey: process.env.GOOGLE_API_KEY,
+    apiKey: process.env.OPENAI_API_KEY,
     temperature: 0.7,
     streaming: true, // 启用流式响应
   });
@@ -289,3 +293,4 @@ export {
   runBatchStreaming,
   checkpointer,
 };
+

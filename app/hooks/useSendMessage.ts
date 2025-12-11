@@ -12,6 +12,7 @@ interface UseSendMessageParams {
   finishStreaming: (id: string) => void                // 完成流式传输
   addErrorMessage: () => void                          // 添加错误消息
   updateSessionName: (name: string) => void            // 更新会话名称
+  currentModel: string                                 // 当前使用的模型
 }
 
 /**
@@ -36,7 +37,8 @@ export function useSendMessage({
   updateMessageContent,
   finishStreaming,
   addErrorMessage,
-  updateSessionName
+  updateSessionName,
+  currentModel
 }: UseSendMessageParams) {
 
   /**
@@ -53,6 +55,8 @@ export function useSendMessage({
    * @param input - 用户输入的消息内容
    */
   const sendMessage = useCallback(async (input: string) => {
+    console.log(`[消息发送] 开始发送消息，模型: ${currentModel}，会话ID: ${sessionId}，内容: ${input}`)
+    
     // 1. 添加用户消息
     addUserMessage(input)
     setIsLoading(true)
@@ -62,7 +66,11 @@ export function useSendMessage({
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: input, thread_id: sessionId })
+        body: JSON.stringify({ 
+          message: input, 
+          thread_id: sessionId,
+          model: currentModel
+        })
       })
 
       if (!response.ok) {
@@ -138,8 +146,14 @@ export function useSendMessage({
     updateMessageContent,
     finishStreaming,
     addErrorMessage,
-    updateSessionName
+    updateSessionName,
+    currentModel
   ])
 
   return { sendMessage }
 }
+
+
+
+
+

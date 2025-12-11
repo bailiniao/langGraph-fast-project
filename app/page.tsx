@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 
 // 导入组件
 import SessionSidebar from './components/SessionSidebar'
@@ -62,6 +62,17 @@ export default function ChatPage() {
   // 当 sessionId 变化时,会自动触发历史记录加载
   useChatHistory(sessionId, loadMessages, setHasUserMessage)
 
+  // ==================== 模型管理 ====================
+  // 当前使用的模型
+  const [currentModel, setCurrentModel] = useState('qwen3-max')
+  const availableModels = ['qwen3-max', 'qwen-plus']
+
+  // 处理模型切换
+  const handleModelChange = (newModel: string) => {
+    console.log(`[模型切换] 从 ${currentModel} 切换到 ${newModel}`)
+    setCurrentModel(newModel)
+  }
+
   // ==================== 消息发送 ====================
   // 使用 useSendMessage hook 处理消息发送逻辑
   const { sendMessage } = useSendMessage({
@@ -72,7 +83,8 @@ export default function ChatPage() {
     updateMessageContent,
     finishStreaming,
     addErrorMessage,
-    updateSessionName
+    updateSessionName,
+    currentModel  // 传递当前模型
   })
 
   // 处理建议点击
@@ -100,7 +112,11 @@ export default function ChatPage() {
       {/* 右侧主体内容区域 */}
       <div className="flex-1 flex flex-col z-10 overflow-hidden relative h-full">
         {/* 顶部导航栏 - Moved inside right column */}
-        <ChatHeader />
+        <ChatHeader 
+          currentModel={currentModel}
+          availableModels={availableModels}
+          onModelChange={handleModelChange}
+        />
 
         <div className="flex-1 flex flex-col relative overflow-hidden">
              <div className="flex-1 overflow-y-auto scrollbar-hide scroll-smooth flex flex-col z-10 pb-32" id="chat-container">

@@ -1,6 +1,12 @@
 import { useState } from 'react'
 import { Sparkles, ChevronDown, Bell, GitBranch } from 'lucide-react'
 
+interface ChatHeaderProps {
+  currentModel: string
+  availableModels: string[]
+  onModelChange: (model: string) => void
+}
+
 /**
  * 聊天页面头部导航栏组件
  *
@@ -13,10 +19,8 @@ import { Sparkles, ChevronDown, Bell, GitBranch } from 'lucide-react'
  * - 在线状态指示(绿色脉冲点)
  * - 技术标签展示当前使用的 AI 模型和技术
  */
-export function ChatHeader() {
+export function ChatHeader({ currentModel, availableModels, onModelChange }: ChatHeaderProps) {
     const [isOpen, setIsOpen] = useState(false)
-    const [currentModel, setCurrentModel] = useState('GPT-4 Turbo')
-    const models = ['GPT-4 Turbo', 'GPT-3.5 Turbo', 'Claude 3 Opus', 'Llama 3']
 
     return (
     <header className="h-16 flex items-center justify-between px-8 z-50 w-full mb-0 bg-transparent border-b-0 shadow-none sticky top-0">
@@ -32,11 +36,11 @@ export function ChatHeader() {
 
           {isOpen && (
               <div className="absolute top-full left-0 mt-2 w-48 bg-[#0B0E14]/90 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden py-1 z-50 animate-fade-in-up">
-                  {models.map((model) => (
+                  {availableModels.map((model) => (
                           <div 
                             key={model}
                             onClick={() => {
-                                setCurrentModel(model)
+                                onModelChange(model)
                                 setIsOpen(false)
                             }}
                             className={`px-4 py-2.5 text-sm cursor-pointer transition-colors flex items-center gap-2 ${
