@@ -6,70 +6,28 @@ import {
   END,
 } from '@langchain/langgraph';
 import { ChatOpenAI } from '@langchain/openai'; // 替换 Google GenAI 为 OpenAI
+
 import { HumanMessage } from '@langchain/core/messages';
 import { SqliteSaver } from '@langchain/langgraph-checkpoint-sqlite';
 import path from 'path';
 import Database from 'better-sqlite3';
 import { initSessionTable } from './db';
-import { getEnabledToolsConfig } from './config/tools.config'; // 修改导入
 
-// 存储当前模型名称的全局变量
-let currentModelName: string = process.env.OPENAI_MODEL_NAME || 'qwen3-max';
-
-// 创建模型工厂函数，根据模型名称动态创建 ChatOpenAI 实例
-function createModel(modelName: string) {
-  console.log('创建模型实例，使用模型:', modelName); // 添加调试日志
-  return new ChatOpenAI({
-    model: modelName,
-    openAIApiKey: process.env.OPENAI_API_KEY,
-    configuration: {
-      baseURL: process.env.OPENAI_BASE_URL || 'https://dashscope.aliyuncs.com/compatible-mode/v1',
-    },
-    temperature: 0.7,
-    streaming: true, // 启用流式响应
-  });
-}
+// 初始化 Google Gemini 模型
+const model = new ChatOpenAI({
+  model: process.env.OPENAI_MODEL_NAME || 'gemini-3-pro-image-preview',
+  apiKey: process.env.OPENAI_API_KEY,
+  temperature: 0.7,
+  streaming: true, // 启用流式响应
+});
 
 // 聊天节点：处理用户输入并生成回复
 async function chatbotNode(state: typeof MessagesAnnotation.State) {
-  // 获取最新的用户消息
-  const lastMessage = state.messages[state.messages.length - 1];
-  
-  // 检查是否是用户消息
-  if (lastMessage._getType() === 'human') {
-    const userMessage = lastMessage.content.toString();
-    
-    // 尝试使用特定回复工具
-    try {
-      const toolsConfig = getEnabledToolsConfig();
-      const specificReplyTool = toolsConfig['specific_reply'];
-      
-      // 如果有特定回复工具，则直接调用其处理函数
-      if (specificReplyTool) {
-        const reply = await specificReplyTool.handler({ message: userMessage });
-        
-        // 如果有特定回复，则直接返回
-        if (reply) {
-          return { messages: [{ content: reply, type: 'ai' }] };
-        }
-      }
-    } catch (error) {
-      // 如果工具调用失败，继续使用大模型
-      console.log('特定回复工具调用失败，使用大模型:', error);
-    }
-  }
-  
-  // 如果没有特定回复，则使用大模型生成回复
-  // 根据当前模型名称创建模型实例
-  const model = createModel(currentModelName);
-  console.log('使用模型:', currentModelName);
   const response = await model.invoke(state.messages);
   return { messages: [response] };
 }
-
 const dbPath = path.resolve(process.cwd(), 'chat_history.db');
 export const db = new Database(dbPath);
-
 // 构建流式聊天机器人图
 const workflow = new StateGraph(MessagesAnnotation)
   .addNode('chatbot', chatbotNode)
@@ -82,7 +40,7 @@ let app: ReturnType<typeof workflow.compile>;
 
 export const getCheckpointer = () => {
   if (!checkpointer) {
-    // 创建 SQLite 检点保存器
+    // 创建 SQLite 检查点保存器
     console.log('初始化 SqliteSaver，数据库路径:', dbPath);
     try {
       // 初始化自定义 sessions 表
@@ -99,7 +57,7 @@ export const getCheckpointer = () => {
 
 async function initializeApp() {
   if (!checkpointer) {
-    // 创建 SQLite 检点保存器
+    // 创建 SQLite 检查点保存器
     console.log('初始化 SqliteSaver，数据库路径:', dbPath);
     try {
       // 使用 better-sqlite3 创建数据库连接
@@ -120,17 +78,11 @@ async function initializeApp() {
 
   return app;
 }
-
+// initializeApp();
 // 获取应用实例的函数
 const getApp = async () => {
   return await initializeApp();
 };
-
-// 设置当前模型名称的函数
-export function setCurrentModelName(modelName: string) {
-  console.log('设置当前模型名称为:', modelName); // 添加调试日志
-  currentModelName = modelName;
-}
 
 // 流式响应示例
 async function runStreamingChatbot() {
@@ -312,13 +264,10 @@ if (require.main === module) {
   // }
 
   // main().catch(console.error);
-  // 初始化阿里云千问模型
+  // 初始化 Google Gemini 模型
   const model = new ChatOpenAI({
-    model: process.env.OPENAI_MODEL_NAME || 'qwen3-max',
-    openAIApiKey: process.env.OPENAI_API_KEY,
-    configuration: {
-      baseURL: process.env.OPENAI_BASE_URL || 'https://dashscope.aliyuncs.com/compatible-mode/v1',
-    },
+    model: process.env.OPENAI_MODEL_NAME || 'gemini-3-pro-image-preview',
+    apiKey: process.env.GOOGLE_API_KEY,
     temperature: 0.7,
     streaming: true, // 启用流式响应
   });
@@ -338,5 +287,5 @@ export {
   StreamingHandler,
   runCustomStreamingHandler,
   runBatchStreaming,
-  checkpointer
+  checkpointer,
 };

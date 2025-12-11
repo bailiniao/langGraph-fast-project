@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react'
 import { ArrowUp, Paperclip, Loader2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 
 interface ChatInputProps {
   onSend: (message: string) => void
@@ -60,9 +59,9 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(({ onSend, 
         : 'focus-within:ring-1 focus-within:ring-blue-500/50 focus-within:shadow-[0_0_40px_rgba(59,130,246,0.2)]'
     }`}>
       <div className="flex items-end p-3 gap-3">
-        <Button variant="ghost" size="icon-sm" className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition" disabled={disabled}>
+        <button className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition" disabled={disabled}>
             <Paperclip className="w-5 h-5" />
-        </Button>
+        </button>
 
         <textarea
           ref={textareaRef}
@@ -77,23 +76,23 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(({ onSend, 
           disabled={disabled}
         />
 
-        <Button
+        <button
           onClick={handleSend}
           disabled={!input.trim() || disabled}
-          variant={disabled ? "secondary" : input.trim() ? "default" : "secondary"}
-          size="icon-sm"
-          className={`p-2 rounded-lg shadow-lg transition-all mb-[1px] min-w-10 min-h-10 flex items-center justify-center ${disabled
-              ? 'bg-yellow-600/20 text-yellow-400 cursor-wait'
-              : input.trim()
-              ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 text-white shadow-blue-600/20 active:scale-95'
-              : 'bg-slate-800 text-slate-500 cursor-not-allowed'}`}
+          className={`p-2 rounded-lg shadow-lg transition-all mb-[1px] min-w-10 min-h-10 flex items-center justify-center ${
+            disabled
+                ? 'bg-yellow-600/20 text-yellow-400 cursor-wait'
+                : input.trim()
+                ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 text-white shadow-blue-600/20 active:scale-95'
+                : 'bg-slate-800 text-slate-500 cursor-not-allowed'
+          }`}
         >
           {disabled ? (
             <Loader2 className="w-5 h-5 animate-spin" />
           ) : (
             <ArrowUp className="w-5 h-5" />
           )}
-        </Button>
+        </button>
       </div>
     </div>
   )

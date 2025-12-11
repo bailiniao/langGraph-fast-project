@@ -1,25 +1,17 @@
 import '../../utils/loadEnv';
 import { NextRequest, NextResponse } from 'next/server';
 import { HumanMessage } from '@langchain/core/messages';
-import { getApp, setCurrentModelName } from '@/app/agent/chatbot';
+import { getApp } from '@/app/agent/chatbot';
 
 // 引入uuid生成器
 import { randomUUID } from 'crypto';
 
 export async function POST(request: NextRequest) {
   try {
-    const { message, thread_id, model_name } = await request.json();
-    
-    console.log('API收到请求，参数:', { message, thread_id, model_name }); // 添加调试日志
+    const { message, thread_id } = await request.json();
 
     if (!message || typeof message !== 'string') {
       return NextResponse.json({ error: '无效的消息格式' }, { status: 400 });
-    }
-
-    // 如果提供了模型名称，则更新当前模型
-    if (model_name && typeof model_name === 'string') {
-      console.log('更新模型名称为:', model_name); // 添加调试日志
-      setCurrentModelName(model_name);
     }
 
     // 创建消息对象

@@ -1,8 +1,5 @@
 import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
 import { MessageSquare, Plus, Trash2, Edit2, Zap, User } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
 
 interface Session {
     id: string;
@@ -114,14 +111,13 @@ const SessionSidebar = forwardRef(function SessionSidebar(
             </div>
 
             <div className="px-4 mb-6">
-                <Button 
+                <button 
                     onClick={handleNew}
-                    variant="secondary"
                     className="w-full py-3 px-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 text-slate-200 font-medium transition-all flex items-center justify-center gap-2 group"
                 >
                     <Plus className="w-4 h-4 text-blue-400 group-hover:rotate-90 transition-transform" />
                     <span>新建对话</span>
-                </Button>
+                </button>
             </div>
 
             <div className="flex-1 overflow-y-auto px-3 scrollbar-hide">
@@ -133,14 +129,14 @@ const SessionSidebar = forwardRef(function SessionSidebar(
                         </div>
                     ) : (
                         sessions.map((session) => (
-                            <Card
+                            <div
                                 key={session.id}
-                                onClick={() => onSelect(session.id)}
                                 className={`group flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors relative ${
                                     currentSessionId === session.id 
                                         ? 'bg-white/10 text-slate-200 shadow-sm border border-white/5' 
                                         : 'hover:bg-white/5 text-slate-400 hover:text-slate-200 border border-transparent'
                                 }`}
+                                onClick={() => onSelect(session.id)}
                             >
                                 <div className={`w-1 h-8 rounded-full absolute left-0 transition-all duration-300 ${
                                     currentSessionId === session.id ? 'bg-blue-500 opacity-100' : 'bg-transparent opacity-0'
@@ -149,7 +145,7 @@ const SessionSidebar = forwardRef(function SessionSidebar(
                                 <MessageSquare className={`w-4 h-4 flex-shrink-0 ${currentSessionId === session.id ? 'text-blue-400' : 'text-slate-500 group-hover:text-blue-400'}`} />
                                 
                                 {editingSessionId === session.id ? (
-                                    <Input
+                                    <input
                                         type="text"
                                         value={newSessionName}
                                         onChange={(e) => setNewSessionName(e.target.value)}
@@ -166,27 +162,23 @@ const SessionSidebar = forwardRef(function SessionSidebar(
                                 {/* Hover Actions */}
                                 {editingSessionId !== session.id && (
                                     <div className={`flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity absolute right-2 bg-[#050509]/80 backdrop-blur shadow-sm rounded-lg p-0.5 border border-white/10`}>
-                                        <Button
+                                        <button
                                             onClick={(e) => handleRename(session.id, session.name, e)}
-                                            variant="ghost"
-                                            size="icon-sm"
                                             className="p-1.5 text-slate-400 hover:text-blue-400 hover:bg-white/10 rounded-md transition-colors"
                                             title="重命名"
                                         >
                                             <Edit2 className="w-3 h-3" />
-                                        </Button>
-                                        <Button
+                                        </button>
+                                        <button
                                             onClick={(e) => handleDelete(session.id, e)}
-                                            variant="ghost"
-                                            size="icon-sm"
                                             className="p-1.5 text-slate-400 hover:text-red-400 hover:bg-white/10 rounded-md transition-colors"
                                             title="删除"
                                         >
                                             <Trash2 className="w-3 h-3" />
-                                        </Button>
+                                        </button>
                                     </div>
                                 )}
-                            </Card>
+                            </div>
                         ))
                     )}
                 </div>

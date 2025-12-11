@@ -59,7 +59,7 @@ OPENAI_MAX_TOKENS=1000
 
 # 如使用阿里云通义千问
 # OPENAI_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
-# OPENAI_MODEL_NAME=qwen3-max
+# OPENAI_MODEL_NAME=qwen-plus
 ```
 
 ### 4. 启动开发服务器

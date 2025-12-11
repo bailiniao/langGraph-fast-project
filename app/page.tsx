@@ -1,10 +1,10 @@
 'use client'
 
-import { useRef, useState, useMemo } from 'react'
+import { useRef } from 'react'
 
 // 导入组件
 import SessionSidebar from './components/SessionSidebar'
-import { ChatHeader, ModelContext } from './components/ChatHeader'
+import { ChatHeader } from './components/ChatHeader'
 import { MessageList } from './components/MessageList'
 import { ChatInput, type ChatInputHandle } from './components/ChatInput'
 import { BackgroundEffects } from './components/BackgroundEffects'
@@ -31,15 +31,6 @@ import { useSendMessage } from './hooks/useSendMessage'
  */
 export default function ChatPage() {
   const chatInputRef = useRef<ChatInputHandle>(null)
-  
-  // 模型状态管理
-  const [currentModel, setCurrentModel] = useState('qwen3-max')
-  
-  // 使用 useMemo 确保 context value 对象稳定
-  const modelContextValue = useMemo(() => ({
-    currentModel,
-    setCurrentModel
-  }), [currentModel])
 
   // ==================== 消息管理 ====================
   // 使用 useChatMessages hook 管理所有消息相关的状态和方法
@@ -71,58 +62,8 @@ export default function ChatPage() {
   // 当 sessionId 变化时,会自动触发历史记录加载
   useChatHistory(sessionId, loadMessages, setHasUserMessage)
 
-  // 恢复正常的useSendMessage调用，我们将通过其他方式确保它能访问到ModelContext
-
-  // 处理建议点击
-  const handleSuggestionClick = (text: string) => {
-    if (chatInputRef.current) {
-      chatInputRef.current.setInput(text)
-    }
-  }
-
-  // ==================== 渲染 UI ====================
-  return (
-    <ModelContext.Provider value={modelContextValue}>
-      <ChatPageContent
-        sessionId={sessionId}
-        chatInputRef={chatInputRef}
-        messages={messages}
-        isLoading={isLoading}
-        handleSuggestionClick={handleSuggestionClick}
-        createNewSession={createNewSession}
-        selectSession={selectSession}
-        sidebarRef={sidebarRef}
-        setIsLoading={setIsLoading}
-        addUserMessage={addUserMessage}
-        addAssistantMessage={addAssistantMessage}
-        updateMessageContent={updateMessageContent}
-        finishStreaming={finishStreaming}
-        addErrorMessage={addErrorMessage}
-        updateSessionName={updateSessionName}
-      />
-    </ModelContext.Provider>
-  )
-}
-
-// 创建一个内部组件来确保useSendMessage能访问到ModelContext
-function ChatPageContent({
-  sessionId,
-  chatInputRef,
-  messages,
-  isLoading,
-  handleSuggestionClick,
-  createNewSession,
-  selectSession,
-  sidebarRef,
-  setIsLoading,
-  addUserMessage,
-  addAssistantMessage,
-  updateMessageContent,
-  finishStreaming,
-  addErrorMessage,
-  updateSessionName
-}: any) {
-  // 在ModelContext.Provider内部调用useSendMessage钩子
+  // ==================== 消息发送 ====================
+  // 使用 useSendMessage hook 处理消息发送逻辑
   const { sendMessage } = useSendMessage({
     sessionId,
     setIsLoading,
@@ -134,6 +75,14 @@ function ChatPageContent({
     updateSessionName
   })
 
+  // 处理建议点击
+  const handleSuggestionClick = (text: string) => {
+    if (chatInputRef.current) {
+      chatInputRef.current.setInput(text)
+    }
+  }
+
+  // ==================== 渲染 UI ====================
   return (
     <main className="flex-1 flex flex-row relative h-full overflow-hidden">
       {/* 动态背景 */}

@@ -1,5 +1,4 @@
-import { useCallback, useContext } from 'react'
-import { ModelContext } from '@/app/components/ChatHeader'
+import { useCallback } from 'react'
 
 /**
  * 消息发送 Hook 的参数接口
@@ -40,9 +39,6 @@ export function useSendMessage({
   updateSessionName
 }: UseSendMessageParams) {
 
-  // 获取模型上下文
-  const { currentModel } = useContext(ModelContext)
-
   /**
    * 发送消息并处理响应
    *
@@ -62,18 +58,11 @@ export function useSendMessage({
     setIsLoading(true)
 
     try {
-      // 直接从 context 中获取最新模型值
-      console.log('发送消息，当前模型:', currentModel);
-      
-      // 2. 发送请求到 API，包含模型名称
+      // 2. 发送请求到 API
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          message: input, 
-          thread_id: sessionId,
-          model_name: currentModel  // 直接使用 context 中的最新值
-        })
+        body: JSON.stringify({ message: input, thread_id: sessionId })
       })
 
       if (!response.ok) {
@@ -143,7 +132,6 @@ export function useSendMessage({
     }
   }, [
     sessionId,
-    currentModel,  // 使用解构后的currentModel作为依赖
     setIsLoading,
     addUserMessage,
     addAssistantMessage,

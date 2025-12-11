@@ -29,7 +29,4 @@ export function deleteSession(id: string) {
     db.prepare('DELETE FROM sessions WHERE id = ?').run(id);
 }
 
-// 确保在模块加载时初始化数据库表
-initSessionTable();
-
-export default db;
+export default db; 

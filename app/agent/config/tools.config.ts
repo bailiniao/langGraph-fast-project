@@ -19,17 +19,13 @@ interface WeatherParams {
   city: string;
 }
 
+
 interface SearchParams {
   query: string;
 }
 
-// 定义特定回复参数接口
-interface SpecificReplyParams {
-  message: string;
-}
-
 // 基础工具配置
-export const toolsConfig: Record<string, ToolConfig<any>> = {
+export const toolsConfig: Record<string, ToolConfig> = {
   calculator: {
     name: 'calculator',
     description: '计算数学表达式',
@@ -37,9 +33,9 @@ export const toolsConfig: Record<string, ToolConfig<any>> = {
     schema: z.object({
       expression: z.string().describe('要计算的数学表达式，例如 "2 + 3 * 4"'),
     }),
-    handler: async (params?: Record<string, unknown>) => {
-      if (!params || !('expression' in params)) return '';
-      const { expression } = params as unknown as CalculatorParams;
+    handler: async (params?: CalculatorParams) => {
+      if (!params) return '';
+      const { expression } = params;
       try {
         // 简单的数学表达式计算（生产环境中应使用更安全的方法）
         const result = Function(`"use strict"; return (${expression})`)();
@@ -57,9 +53,9 @@ export const toolsConfig: Record<string, ToolConfig<any>> = {
     schema: z.object({
       city: z.string().describe('要查询天气的城市名称'),
     }),
-    handler: async (params?: Record<string, unknown>) => {
-      if (!params || !('city' in params)) return '';
-      const { city } = params as unknown as WeatherParams;
+    handler: async (params?: WeatherParams) => {
+      if (!params) return '';
+      const { city } = params;
       // 模拟天气数据
       const weatherData = {
         北京: { temp: '15°C', condition: '晴天', humidity: '45%' },
@@ -90,7 +86,7 @@ export const toolsConfig: Record<string, ToolConfig<any>> = {
     description: '获取当前时间和日期',
     enabled: true,
     schema: z.object({}),
-    handler: async (_params?: Record<string, unknown>) => {
+    handler: async (_params?: Record<string, never>) => {
       const now = new Date();
       return `当前时间: ${now.toLocaleString('zh-CN', {
         timeZone: 'Asia/Shanghai',
@@ -112,9 +108,9 @@ export const toolsConfig: Record<string, ToolConfig<any>> = {
     schema: z.object({
       query: z.string().describe('搜索查询词'),
     }),
-    handler: async (params?: Record<string, unknown>) => {
-      if (!params || !('query' in params)) return '';
-      const { query } = params as unknown as SearchParams;
+    handler: async (params?: SearchParams) => {
+      if (!params) return '';
+      const { query } = params;
       // 模拟搜索结果
       const searchResults = [
         `关于 "${query}" 的搜索结果：`,
@@ -130,41 +126,6 @@ export const toolsConfig: Record<string, ToolConfig<any>> = {
       maxResults: 5,
       searchEngine: 'mock', // 可以配置为 'google', 'bing', 'tavily' 等
       apiKey: process.env.SEARCH_API_KEY,
-    },
-  },
-
-  // 新增特定回复工具
-  specific_reply: {
-    name: 'specific_reply',
-    description: '针对特定话语提供预定义回复',
-    enabled: true,
-    schema: z.object({
-      message: z.string().describe('用户的消息内容'),
-    }),
-    handler: async (params?: Record<string, unknown>) => {
-      if (!params || !('message' in params)) return '';
-      const { message } = params as unknown as SpecificReplyParams;
-      
-      // 定义特定话语和对应的回复
-      const specificReplies: Record<string, string> = {
-        '你好': '你好！有什么我可以帮助你的吗？',
-        '你是谁': '我是基于LangGraphJS构建的智能聊天助手。',
-        '再见': '再见！期待下次与你交流。',
-        '谢谢': '不客气！如果你有任何问题，随时问我。',
-        '早上好': '早上好！今天过得怎么样？',
-        '晚上好': '晚上好！今天过得如何？'
-      };
-
-      // 检查是否有匹配的特定回复
-      const normalizedMessage = message.trim();
-      for (const [key, reply] of Object.entries(specificReplies)) {
-        if (normalizedMessage.includes(key)) {
-          return reply;
-        }
-      }
-
-      // 如果没有匹配的特定回复，返回空字符串
-      return '';
     },
   },
 };
@@ -187,11 +148,11 @@ export interface EnvironmentConfig {
 
 export const environmentConfig: EnvironmentConfig = {
   development: {
-    enabledTools: ['calculator', 'weather', 'current_time', 'search', 'specific_reply'],
+    enabledTools: ['calculator', 'weather', 'current_time', 'search'],
     debugMode: true,
   },
   production: {
-    enabledTools: ['calculator', 'weather', 'current_time', 'search', 'specific_reply'],
+    enabledTools: ['calculator', 'weather', 'current_time', 'search'],
     debugMode: false,
   },
   test: {
@@ -210,9 +171,9 @@ export function getCurrentEnvironmentConfig() {
 }
 
 // 获取启用的工具配置
-export function getEnabledToolsConfig(): Record<string, ToolConfig<any>> {
+export function getEnabledToolsConfig(): Record<string, ToolConfig> {
   const envConfig = getCurrentEnvironmentConfig();
-  const enabledTools: Record<string, ToolConfig<any>> = {};
+  const enabledTools: Record<string, ToolConfig> = {};
 
   for (const toolName of envConfig.enabledTools) {
     const toolConfig = toolsConfig[toolName];
@@ -225,7 +186,7 @@ export function getEnabledToolsConfig(): Record<string, ToolConfig<any>> {
 }
 
 // 工具配置验证
-export function validateToolConfig(config: ToolConfig<any>): boolean {
+export function validateToolConfig(config: ToolConfig): boolean {
   return !!(
     config.name &&
     config.description &&
@@ -237,7 +198,7 @@ export function validateToolConfig(config: ToolConfig<any>): boolean {
 
 // 动态添加工具配置
 export function addToolConfig<T = Record<string, unknown>>(name: string, config: Omit<ToolConfig<T>, 'name'>) {
-  const fullConfig: ToolConfig<any> = {
+  const fullConfig: ToolConfig<T> = {
     name,
     ...config,
   };
@@ -246,7 +207,7 @@ export function addToolConfig<T = Record<string, unknown>>(name: string, config:
     throw new Error(`Invalid tool configuration for ${name}`);
   }
 
-  toolsConfig[name] = fullConfig as ToolConfig<any>;
+  toolsConfig[name] = fullConfig as ToolConfig;
 }
 
 // 禁用工具

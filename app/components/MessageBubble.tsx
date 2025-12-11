@@ -2,8 +2,6 @@
 
 import { Bot, User } from 'lucide-react'
 import { MarkdownRenderer } from './MarkdownRenderer'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 
 export interface Message {
   id: string
@@ -38,12 +36,13 @@ export function MessageBubble({ message, index }: MessageBubbleProps) {
       )}
 
       {/* Message Content Bubble */}
-      <Card className={`
+      <div className={`
         ${isUser 
             ? 'max-w-2xl bg-[#1E293B] border border-white/10 rounded-2xl rounded-tr-none p-4 text-slate-100 leading-relaxed shadow-lg' 
             : 'flex-1 bg-white/5 border border-white/5 rounded-2xl rounded-tl-none p-4 text-slate-300'
         }
       `}>
+
 
          <div className={`text-[15px] leading-relaxed ${isUser ? 'text-slate-100' : 'text-slate-300'}`}>
             <MarkdownRenderer content={message.content} />
@@ -55,7 +54,7 @@ export function MessageBubble({ message, index }: MessageBubbleProps) {
          )}
          
 
-      </Card>
+      </div>
 
       {isUser && (
         <div className="ml-0 w-10 h-10 rounded-full bg-slate-700 overflow-hidden flex-shrink-0 border border-white/10 shadow-lg">
