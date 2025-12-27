@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react'
-import { ArrowUp, Paperclip, Loader2 } from 'lucide-react'
+import Image from 'next/image'
 
 interface ChatInputProps {
   onSend: (message: string) => void
@@ -13,9 +13,22 @@ export interface ChatInputHandle {
   focus: () => void
 }
 
+// 竹林山水风格图标组件
+const ScrollIcon = ({ className }: { className?: string }) => (
+    <span className={className} style={{ width: 20, height: 20, display: 'inline-block' }}>📜</span>
+)
+
+const SendBambooIcon = ({ className }: { className?: string }) => (
+    <span className={className} style={{ width: 20, height: 20, display: 'inline-block' }}>🎋</span>
+)
+
+const BambooSplashIcon = ({ className }: { className?: string }) => (
+    <span className={className} style={{ width: 20, height: 20, display: 'inline-block' }}>💧</span>
+)
+
 /**
- * Chat Input Component
- * Refactored to match demo.html "Floating Glass Island" style.
+ * 竹林山水风格聊天输入组件
+ * 重构为令牌按钮和古典输入框样式
  */
 export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(({ onSend, disabled }, ref) => {
   const [input, setInput] = useState('')
@@ -53,47 +66,47 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(({ onSend, 
   }
 
   return (
-    <div className={`w-full max-w-5xl glass-panel rounded-2xl shadow-2xl shadow-black/50 transition-all duration-300 ${
-      disabled
-        ? 'ring-1 ring-yellow-500/30 shadow-[0_0_30px_rgba(234,179,8,0.15)]'
-        : 'focus-within:ring-1 focus-within:ring-blue-500/50 focus-within:shadow-[0_0_40px_rgba(59,130,246,0.2)]'
-    }`}>
-      <div className="flex items-end p-3 gap-3">
-        <button className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition" disabled={disabled}>
-            <Paperclip className="w-5 h-5" />
+    <div className={`w-full max-w-5xl wuxia-panel rounded-2xl shadow-2xl shadow-black/50 transition-all duration-300 ${disabled ? 'ring-2 ring-bamboo-stone/30 shadow-[0_0_30px_rgba(87,83,74,0.2)]' : 'focus-within:ring-2 focus-within:ring-bamboo-qing/50 focus-within:shadow-[0_0_40px_rgba(87,83,74,0.25)]'}`}>
+      <div className="flex items-end p-4 gap-3">
+        {/* 附件令牌按钮 */}
+        <button 
+          className="wuxia-button p-2 text-bamboo-qing hover:text-bamboo-ink hover:bg-bamboo-cloud/10 rounded-lg transition-colors duration-300" 
+          disabled={disabled}
+          title="竹间传书"
+        >
+          <ScrollIcon className="w-5 h-5" />
         </button>
 
+        {/* 古典输入框 */}
         <textarea
           ref={textareaRef}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={disabled ? "AI 正在回复中..." : "输入您的问题，开启 AI 之旅..."}
-          className={`w-full bg-transparent border-none outline-none text-slate-200 text-base resize-none py-2 max-h-32 transition-opacity ${
-            disabled ? 'placeholder-yellow-400/60 opacity-60' : 'placeholder-slate-500'
-          }`}
+          placeholder={disabled ? "雅士正在东篱下深思..." : "请输入您的疑问或闲谈..."}
+          className={`w-full bg-transparent border-none outline-none text-bamboo-ink text-base resize-none py-3 max-h-32 transition-all duration-300 font-serif ${disabled ? 'placeholder-bamboo-stone/60 opacity-60' : 'placeholder-bamboo-stone/50'}`}
+          style={{ fontFamily: 'var(--font-wuxia-body)' }}
           rows={1}
           disabled={disabled}
         />
 
+        {/* 传书令牌按钮 */}
         <button
           onClick={handleSend}
           disabled={!input.trim() || disabled}
-          className={`p-2 rounded-lg shadow-lg transition-all mb-[1px] min-w-10 min-h-10 flex items-center justify-center ${
-            disabled
-                ? 'bg-yellow-600/20 text-yellow-400 cursor-wait'
-                : input.trim()
-                ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 text-white shadow-blue-600/20 active:scale-95'
-                : 'bg-slate-800 text-slate-500 cursor-not-allowed'
-          }`}
+          className={`wuxia-button p-3 rounded-lg shadow-lg transition-all duration-300 mb-[1px] min-w-12 min-h-12 flex items-center justify-center group ${disabled ? 'bg-bamboo-stone/30 text-bamboo-stone cursor-wait ring-1 ring-bamboo-stone/30' : input.trim() ? 'bg-gradient-to-r from-bamboo-qing to-bamboo-stone hover:from-bamboo-qing/80 hover:to-bamboo-stone/80 text-white shadow-bamboo-qing/30 active:scale-95 ring-1 ring-bamboo-qing/20 hover:shadow-[0_0_20px_rgba(87,83,74,0.4)]' : 'bg-bamboo-cloud/50 text-bamboo-stone cursor-not-allowed ring-1 ring-bamboo-stone/20'}`}
+          title={disabled ? "雅士深思中..." : "竹间传书"}
         >
           {disabled ? (
-            <Loader2 className="w-5 h-5 animate-spin" />
+            <BambooSplashIcon className="w-5 h-5 animate-wuxia-ink-spread" />
           ) : (
-            <ArrowUp className="w-5 h-5" />
+            <SendBambooIcon className="w-5 h-5 group-hover:animate-wuxia-spin-sword" />
           )}
         </button>
       </div>
+      
+      {/* 底部装饰线 */}
+      <div className="h-px bg-gradient-to-r from-transparent via-bamboo-stone/20 to-transparent"></div>
     </div>
   )
 })

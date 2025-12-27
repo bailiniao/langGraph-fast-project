@@ -1,23 +1,35 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg-deep: #050509;
-  --color-bg-glass: rgba(20, 20, 30, 0.6);
-  --color-accent-blue: #3B82F6;
-  --color-accent-purple: #8B5CF6;
-  --color-accent-cyan: #06b6d4;
+  /* 泼墨竹林山水风格色彩系统 */
+  --color-bamboo-ink: #1A1A1A; /* 水墨黑 - 文字主色 */
+  --color-bamboo-qing: #4A6D5E; /* 竹青 - 主色调 */
+  --color-bamboo-stone: #6B7F6F; /* 石绿 - 辅助色 */
+  --color-bamboo-ochre: #8B7355; /* 赭石 - 强调色 */
+  --color-bamboo-paper: #F5F2EA; /* 宣纸白 - 表面色 */
+  --color-bamboo-cloud: #E8E5DD; /* 云雾灰 - 背景色 */
+  --color-bamboo-leaf: #3A5E4A; /* 竹叶绿 - 点缀色 */
 }
 
 :root {
-  --bg-deep: #050509;
-  --bg-glass: rgba(20, 20, 30, 0.6);
-  --accent-blue: #3B82F6;
-  --accent-purple: #8B5CF6;
-  --accent-cyan: #06b6d4;
+  /* 泼墨竹林山水风格CSS变量 */
+  --bamboo-ink: #1A1A1A;
+  --bamboo-qing: #4A6D5E;
+  --bamboo-stone: #6B7F6F;
+  --bamboo-ochre: #8B7355;
+  --bamboo-paper: #F5F2EA;
+  --bamboo-cloud: #E8E5DD;
+  --bamboo-leaf: #3A5E4A;
+  
+  /* 泼墨竹林山水字体系统 */
+  --font-bamboo-title: "STKaiti", "KaiTi", "KaiTi_GB2312", "KaiTi SC", "DFKai-SB", "楷体", "STSong", "Songti SC", "宋体", serif; /* 毛笔书法标题 */
+  --font-bamboo-body: "SimSun", "宋体", "NSimSun", "STSong", "Songti SC", "仿宋", "FangSong", serif; /* 正文古典字体 */
+  --font-bamboo-note: "FangSong", "仿宋", "STSong", "楷体", "KaiTi", serif; /* 批注文体 */
+  --font-bamboo-code: "JetBrains Mono", "Fira Code", "Source Code Pro", "Consolas", "Monaco", "Courier New", monospace; /* 代码字体 */
+  --font-bamboo-academic: "Times New Roman", "Times", "STSong", "Songti SC", serif; /* 学术古文字体 */
 }
 
 @layer base {
-
   html,
   body {
     height: 100%;
@@ -26,51 +38,142 @@
   }
 }
 
+/* 泼墨竹林山水风格全局样式 */
 body {
-  background-color: var(--bg-deep);
-  color: #E2E8F0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: linear-gradient(135deg, var(--bamboo-cloud) 0%, var(--bamboo-paper) 50%, var(--bamboo-cloud) 100%);
+  background-attachment: fixed;
+  color: var(--bamboo-ink);
+  font-family: var(--font-bamboo-body);
   overflow: hidden;
-  /* Match demo.html style */
+  position: relative;
+}
+
+/* 泼墨竹林山水风格背景纹理 */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    /* 淡墨竹林纹理 */
+    radial-gradient(circle at 20% 30%, rgba(74, 109, 94, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(107, 127, 111, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(58, 94, 74, 0.03) 0%, transparent 50%),
+    /* 竹叶剪影 */
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><path d="M50,100 Q80,60 120,100 Q90,130 50,100 Z" fill="none" stroke="rgba(74, 109, 94, 0.05)" stroke-width="1"/></svg>'),
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" viewBox="0 0 150 150"><path d="M30,70 Q50,40 80,70 Q60,95 30,70 Z" fill="none" stroke="rgba(74, 109, 94, 0.05)" stroke-width="1"/></svg>');
+  background-size: auto, auto, auto, 200px 200px, 150px 150px;
+  background-position: 0 0, 0 0, 0 0, 50px 50px, 100px 100px;
+  pointer-events: none;
+  z-index: -1;
 }
 
 @layer utilities {
-  .tech-grid-bg {
-    background-size: 50px 50px;
-    background-image:
-      linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
-    -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+  /* 泼墨竹林山水风格背景纹理 */
+  .wuxia-paper-bg {
+    background: 
+      /* 宣纸纹理 */
+      linear-gradient(90deg, rgba(74, 109, 94, 0.02) 1px, transparent 1px),
+      linear-gradient(rgba(245, 242, 234, 0.01) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-color: var(--bamboo-paper);
+    position: relative;
   }
 
-  .ambient-glow {
+  .wuxia-paper-bg::before {
+    content: '';
     position: absolute;
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(139, 92, 246, 0.05) 40%, transparent 70%);
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      /* 淡墨渲染效果 */
+      radial-gradient(circle at 30% 40%, rgba(74, 109, 94, 0.01) 0%, transparent 50%),
+      radial-gradient(circle at 70% 60%, rgba(107, 127, 111, 0.01) 0%, transparent 50%);
     pointer-events: none;
-    z-index: 0;
-    filter: blur(60px);
   }
 
-  .glass-panel {
-    background: var(--bg-glass);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+  /* 泼墨竹林山水风格面板 */
+  .wuxia-panel {
+    background: var(--bamboo-paper);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 2px solid var(--bamboo-qing);
+    border-radius: 8px;
+    box-shadow: 
+      0 4px 12px rgba(74, 109, 94, 0.1),
+      inset 0 1px 0 rgba(245, 242, 234, 0.3);
+    position: relative;
   }
 
-  .text-gradient {
-    background: linear-gradient(135deg, #60A5FA, #A78BFA, #2DD4BF);
+  .wuxia-panel::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, var(--bamboo-qing), var(--bamboo-stone), var(--bamboo-qing));
+    border-radius: 8px;
+    z-index: -1;
+    opacity: 0.3;
+    /* 毛笔笔触效果 */
+    clip-path: polygon(
+      0% 0%, 100% 0%, 100% 100%, 0% 100%,
+      0% 10%, 5% 5%, 10% 10%, 15% 5%, 20% 10%,
+      25% 5%, 30% 10%, 35% 5%, 40% 10%, 45% 5%,
+      50% 10%, 55% 5%, 60% 10%, 65% 5%, 70% 10%,
+      75% 5%, 80% 10%, 85% 5%, 90% 10%, 95% 5%,
+      100% 10%, 100% 90%, 95% 85%, 90% 90%, 85% 85%,
+      80% 90%, 75% 85%, 70% 90%, 65% 85%, 60% 90%,
+      55% 85%, 50% 90%, 45% 85%, 40% 90%, 35% 85%,
+      30% 90%, 25% 85%, 20% 90%, 15% 85%, 10% 90%,
+      5% 85%, 0% 90%
+    );
+  }
+
+  /* 泼墨竹林山水风格文字渐变 */
+  .wuxia-text-gradient {
+    background: linear-gradient(135deg, var(--bamboo-qing), var(--bamboo-stone), var(--bamboo-ochre));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    font-family: var(--font-bamboo-title);
   }
 
+  /* 泼墨竹林山水风格按钮 */
+  .wuxia-button {
+    background: var(--bamboo-qing);
+    color: var(--bamboo-paper);
+    border: 2px solid var(--bamboo-stone);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-family: var(--font-bamboo-title);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    /* 毛笔笔触效果 */
+    clip-path: polygon(
+      5% 0%, 95% 0%, 100% 5%, 100% 95%, 95% 100%, 5% 100%, 0% 95%, 0% 5%
+    );
+  }
+
+  .wuxia-button:hover {
+    background: var(--bamboo-stone);
+    box-shadow: 0 4px 12px rgba(74, 109, 94, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .wuxia-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(74, 109, 94, 0.2);
+  }
+
+  /* 隐藏滚动条 */
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
@@ -80,68 +183,312 @@ body {
     scrollbar-width: none;
   }
 
-  .code-editor {
-    font-family: 'JetBrains Mono', monospace;
-    background: #0F1117;
-    border: 1px solid #333;
+  /* 泼墨竹林山水风格输入框 */
+  .wuxia-input {
+    background: var(--bamboo-paper);
+    border: 2px solid var(--bamboo-stone);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-family: var(--font-bamboo-body);
+    color: var(--bamboo-ink);
+    transition: all 0.3s ease;
+  }
+
+  .wuxia-input:focus {
+    outline: none;
+    border-color: var(--bamboo-qing);
+    box-shadow: 0 0 8px rgba(74, 109, 94, 0.2);
+  }
+
+  /* 泼墨竹林山水风格滚动条 */
+  .wuxia-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .wuxia-scrollbar::-webkit-scrollbar-track {
+    background: rgba(232, 229, 221, 0.3);
+    border-radius: 4px;
+  }
+
+  .wuxia-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--bamboo-qing);
+    border-radius: 4px;
+  }
+
+  .wuxia-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--bamboo-stone);
+  }
+
+  /* 泼墨竹林山水风格字体工具类 */
+  .font-wuxia-title {
+    font-family: var(--font-bamboo-title);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-shadow: 1px 1px 2px rgba(74, 109, 94, 0.1);
+  }
+
+  .font-wuxia-body {
+    font-family: var(--font-bamboo-body);
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: 0.02em;
+  }
+
+  .font-wuxia-note {
+    font-family: var(--font-bamboo-note);
+    font-style: italic;
+    font-weight: 400;
+    opacity: 0.8;
+    letter-spacing: 0.03em;
+  }
+
+  .font-wuxia-code {
+    font-family: var(--font-bamboo-code);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+  }
+
+  .font-wuxia-academic {
+    font-family: var(--font-bamboo-academic);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+  }
+
+  /* 泼墨竹林山水风格文字特效 */
+  .wuxia-text-shadow {
+    text-shadow: 2px 2px 4px rgba(74, 109, 94, 0.2);
+  }
+
+  .wuxia-text-glow {
+    text-shadow: 
+      0 0 5px rgba(74, 109, 94, 0.3),
+      0 0 10px rgba(74, 109, 94, 0.2),
+      0 0 15px rgba(74, 109, 94, 0.1);
+  }
+
+  .wuxia-text-inset {
+    text-shadow: 
+      1px 1px 0 rgba(245, 242, 234, 0.3),
+      -1px -1px 0 rgba(74, 109, 94, 0.2);
+  }
+
+  /* 泼墨竹林山水风格文字动画 */
+  .wuxia-text-shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--bamboo-ink) 0%,
+      var(--bamboo-qing) 50%,
+      var(--bamboo-ink) 100%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: wuxia-text-shimmer 3s ease-in-out infinite;
+  }
+
+  @keyframes wuxia-text-shimmer {
+    0%, 100% {
+      background-position: -200% 0;
+    }
+    50% {
+      background-position: 200% 0;
+    }
+  }
+
+  .wuxia-text-breath {
+    animation: wuxia-text-breath 4s ease-in-out infinite;
+  }
+
+  @keyframes wuxia-text-breath {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(1.02);
+    }
+  }
+
+  /* 泼墨竹林山水风格特殊效果 */
+  .wuxia-calligraphy {
+    font-family: var(--font-bamboo-title);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-shadow: 
+      2px 2px 4px rgba(74, 109, 94, 0.3),
+      -1px -1px 0 rgba(245, 242, 234, 0.5);
+    position: relative;
+  }
+
+  .wuxia-calligraphy::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 40%, rgba(74, 109, 94, 0.1) 50%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .wuxia-seal-text {
+    font-family: var(--font-bamboo-academic);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--bamboo-ochre);
+    text-shadow: 
+      1px 1px 0 rgba(139, 115, 85, 0.8),
+      2px 2px 0 rgba(139, 115, 85, 0.6),
+      3px 3px 0 rgba(139, 115, 85, 0.4);
+  }
+
+  .wuxia-ancient-scroll {
+    font-family: var(--font-bamboo-note);
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+    text-align: justify;
+    text-indent: 2em;
+    position: relative;
+  }
+
+  /* 武侠风格间距系统 */
+  .wuxia-spacing-title {
+    margin-bottom: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .wuxia-spacing-section {
+    margin-bottom: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .wuxia-spacing-paragraph {
+    margin-bottom: 0.75rem;
+    line-height: 1.8;
+  }
+
+  /* 响应式字体大小 */
+  .text-wuxia-xs { font-size: 0.75rem; }
+  .text-wuxia-sm { font-size: 0.875rem; }
+  .text-wuxia-base { font-size: 1rem; }
+  .text-wuxia-lg { font-size: 1.125rem; }
+  .text-wuxia-xl { font-size: 1.25rem; }
+  .text-wuxia-2xl { font-size: 1.5rem; }
+  .text-wuxia-3xl { font-size: 1.875rem; }
+  .text-wuxia-4xl { font-size: 2.25rem; }
+
+  @media (max-width: 768px) {
+    .text-wuxia-4xl { font-size: 1.875rem; }
+    .text-wuxia-3xl { font-size: 1.5rem; }
+    .text-wuxia-2xl { font-size: 1.25rem; }
   }
 }
 
-@keyframes spin {
+/* 武侠风格动画关键帧 */
+@keyframes wuxia-spin-sword {
+  0% {
+    transform: rotate(0deg);
+    filter: hue-rotate(0deg);
+  }
+  50% {
+    filter: hue-rotate(180deg);
+  }
   100% {
     transform: rotate(360deg);
+    filter: hue-rotate(360deg);
   }
 }
 
-@keyframes pulse {
-
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 0.8;
-  }
-
-  50% {
-    transform: scale(1.3);
-    opacity: 1;
-  }
-}
-
-@keyframes fadeInUp {
-  from {
+@keyframes wuxia-ink-spread {
+  0% {
     opacity: 0;
-    transform: translateY(30px);
+    transform: scale(0.8);
   }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
 
-  to {
+@keyframes wuxia-fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-@keyframes fadeIn {
-  from {
+@keyframes wuxia-scroll-unfold {
+  0% {
     opacity: 0;
+    transform: scaleY(0) translateY(-20px);
   }
-
-  to {
+  50% {
+    opacity: 0.7;
+    transform: scaleY(1.1) translateY(-10px);
+  }
+  100% {
     opacity: 1;
+    transform: scaleY(1) translateY(0);
   }
 }
 
-/* Animations */
-.animate-spin-slow {
-  animation: spin 3s linear infinite;
+@keyframes wuxia-seal-stamp {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) rotate(-10deg);
+  }
+  70% {
+    opacity: 0.8;
+    transform: scale(1.1) rotate(2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
 }
 
-.animate-spin-reverse {
-  animation: spin 5s linear infinite reverse;
+@keyframes wuxia-glow {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(74, 109, 94, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(74, 109, 94, 0.6);
+  }
 }
 
-.animate-pulse-glow {
-  animation: pulse 2s ease-in-out infinite;
+/* 武侠风格动画类 */
+.animate-wuxia-sword-spin {
+  animation: wuxia-spin-sword 3s linear infinite;
 }
 
-.animate-fade-in-up {
-  animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+.animate-wuxia-ink-spread {
+  animation: wuxia-ink-spread 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.animate-wuxia-fade-in-up {
+  animation: wuxia-fade-in-up 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.animate-wuxia-scroll-unfold {
+  animation: wuxia-scroll-unfold 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-wuxia-seal-stamp {
+  animation: wuxia-seal-stamp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-wuxia-glow {
+  animation: wuxia-glow 2s ease-in-out infinite;
 }

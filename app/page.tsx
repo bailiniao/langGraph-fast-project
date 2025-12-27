@@ -97,9 +97,8 @@ export default function ChatPage() {
   // ==================== 渲染 UI ====================
   return (
     <main className="flex-1 flex flex-row relative h-full overflow-hidden">
-      {/* 动态背景 */}
-      <div className="absolute inset-0 tech-grid-bg z-0 pointer-events-none"></div>
-      <div className="ambient-glow"></div>
+      {/* 全局背景效果 */}
+      <BackgroundEffects />
 
       {/* 左侧会话历史侧边栏 - Full Height */}
       <SessionSidebar

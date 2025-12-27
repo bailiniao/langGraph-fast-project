@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Sparkles, ChevronDown, Bell, GitBranch } from 'lucide-react'
 
 interface ChatHeaderProps {
   currentModel: string
@@ -8,58 +7,123 @@ interface ChatHeaderProps {
 }
 
 /**
- * 聊天页面头部导航栏组件
- *
- * 显示内容:
- * - 左侧: 应用图标、标题和状态指示器
- * - 右侧: 技术标签(模型名称、技术栈、特性)
- *
- * 特性:
- * - 毛玻璃效果背景
- * - 在线状态指示(绿色脉冲点)
- * - 技术标签展示当前使用的 AI 模型和技术
+ * 泼墨竹林山水风格聊天页面头部导航栏组件
+ * 
+ * 特色:
+ * - 竹林山水背景效果
+ * - 书法牌匾样式标题
+ * - 竹简名帖样式模型选择器
+ * - 印章风格功能按钮
  */
 export function ChatHeader({ currentModel, availableModels, onModelChange }: ChatHeaderProps) {
-    const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
 
-    return (
-    <header className="h-16 flex items-center justify-between px-8 z-50 w-full mb-0 bg-transparent border-b-0 shadow-none sticky top-0">
-      <div className="relative">
+  // 泼墨竹林山水风格图标组件
+    const BambooIcon = ({ className }: { className?: string }) => (
+        <span className={className} style={{ width: 24, height: 24, display: 'inline-block' }}>🎋</span>
+    )
+
+    const SealIcon = ({ className }: { className?: string }) => (
+        <span className={className} style={{ width: 20, height: 20, display: 'inline-block' }}>🔍</span>
+    )
+
+    const ScrollIcon = ({ className }: { className?: string }) => (
+        <span className={className} style={{ width: 20, height: 20, display: 'inline-block' }}>📜</span>
+    )
+
+  return (
+    <header className="relative h-16 flex items-center justify-between px-8 z-50 w-full border-b-2 border-bamboo-qing/30 shadow-lg sticky top-0">
+      {/* 竹林山水背景 */}
+      <div className="absolute inset-0 bg-gradient-to-r from-bamboo-cloud/90 via-bamboo-paper/90 to-bamboo-cloud/90">
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-bamboo-qing/10 via-transparent to-bamboo-stone/10 animate-pulse"></div>
+          {/* 竹叶纹理装饰 */}
+          <div className="absolute top-2 left-4 w-16 h-8 bg-gradient-to-r from-transparent via-bamboo-qing/20 to-transparent rounded-full blur-sm"></div>
+          <div className="absolute bottom-2 right-8 w-12 h-6 bg-gradient-to-r from-bamboo-stone/20 via-transparent to-transparent rounded-full blur-sm"></div>
+        </div>
+      </div>
+
+      {/* 左侧标题区域 */}
+      <div className="relative flex items-center gap-4">
+        {/* 书法牌匾样式标题 */}
+        <div className="wuxia-panel px-6 py-2 bg-gradient-to-b from-bamboo-cloud/20 to-bamboo-qing/20">
+          <div className="flex items-center gap-3">
+            <BambooIcon className="w-6 h-6 text-bamboo-qing" />
+            <h1 className="wuxia-text-gradient text-lg font-bold tracking-wider">
+              竹间闲谈
+            </h1>
+            {/* 竹林气息装饰 */}
+            <div className="flex gap-1 ml-2">
+              <div className="w-2 h-2 bg-bamboo-qing rounded-full animate-pulse"></div>
+              <div className="w-2 h-2 bg-bamboo-stone rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+              <div className="w-2 h-2 bg-bamboo-ochre rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
+            </div>
+          </div>
+        </div>
+
+        {/* 模型选择器 - 竹简名帖样式 */}
+        <div className="relative">
           <div 
             onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:border-blue-500/30 cursor-pointer transition backdrop-blur-md"
+            className="wuxia-paper-bg flex items-center gap-3 px-4 py-2 rounded-lg cursor-pointer transition-all duration-300 hover:shadow-lg border-2 border-bamboo-qing/50 hover:border-bamboo-stone"
           >
-            <Sparkles className="text-yellow-500 w-3 h-3" />
-            <span className="text-xs font-medium text-slate-300">{currentModel}</span>
-            <ChevronDown className={`w-2.5 h-2.5 text-slate-500 ml-1 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            <div className="w-4 h-4 text-bamboo-qing">
+              <ScrollIcon />
+            </div>
+            <span className="text-bamboo-ink font-medium text-sm">{currentModel}</span>
+            <div className={`w-3 h-3 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
+              <svg viewBox="0 0 24 24" fill="none" className="text-bamboo-stone">
+                <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            </div>
           </div>
 
           {isOpen && (
-              <div className="absolute top-full left-0 mt-2 w-48 bg-[#0B0E14]/90 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden py-1 z-50 animate-fade-in-up">
-                  {availableModels.map((model) => (
-                          <div 
-                            key={model}
-                            onClick={() => {
-                                onModelChange(model)
-                                setIsOpen(false)
-                            }}
-                            className={`px-4 py-2.5 text-sm cursor-pointer transition-colors flex items-center gap-2 ${
-                                currentModel === model 
-                                    ? 'bg-blue-600/20 text-blue-400' 
-                                    : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
-                            }`}
-                          >
-                              <span className={`w-2 h-2 rounded-full mr-1 ${currentModel === model ? 'bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.5)]' : 'bg-transparent'}`}></span>
-                              {model}
-                          </div>
-                  ))}
-              </div>
+            <div className="absolute top-full left-0 mt-2 w-56 wuxia-panel bg-bamboo-paper/95 backdrop-blur-sm border-2 border-bamboo-qing rounded-xl shadow-xl overflow-hidden py-2 z-50 animate-wuxia-scroll-unfold">
+              {availableModels.map((model) => (
+                <div 
+                  key={model}
+                  onClick={() => {
+                    onModelChange(model)
+                    setIsOpen(false)
+                  }}
+                  className={`px-4 py-3 text-sm cursor-pointer transition-all duration-200 flex items-center gap-3 hover:bg-bamboo-cloud/80 ${currentModel === model ? 'bg-bamboo-cloud/80 text-bamboo-ink border-r-4 border-bamboo-qing' : 'text-bamboo-ink hover:text-bamboo-ink'}`}
+                >
+                  {/* 印章样式指示器 */}
+                  <div className={`w-3 h-3 rounded ${currentModel === model ? 'bg-bamboo-qing animate-wuxia-seal-stamp' : 'bg-bamboo-stone/50'}`}></div>
+                  <span className="font-medium">{model}</span>
+                  {/* 佳册标识 */}
+                  {currentModel === model && (
+                    <div className="ml-auto text-xs bg-bamboo-qing text-bamboo-paper px-2 py-1 rounded-full font-bold">
+                      佳册
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           )}
+        </div>
       </div>
       
-      <div className="flex gap-5 text-slate-400 text-sm">
-        <button className="hover:text-white transition"><Bell className="w-4 h-4" /></button>
-        <button className="hover:text-white transition"><GitBranch className="w-4 h-4" /></button>
+      {/* 右侧功能按钮 - 印章风格 */}
+      <div className="relative flex gap-4">
+        {/* 消息按钮 - 竹简样式 */}
+        <button className="wuxia-button group relative overflow-hidden">
+          <div className="relative z-10 flex items-center gap-2">
+            <SealIcon className="w-4 h-4" />
+            <span className="text-xs font-bold">竹间传语</span>
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-r from-bamboo-qing to-bamboo-stone opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        </button>
+
+        {/* 设置按钮 - 卷轴样式 */}
+        <button className="wuxia-button group relative overflow-hidden">
+          <div className="relative z-10 flex items-center gap-2">
+            <ScrollIcon className="w-4 h-4" />
+            <span className="text-xs font-bold">竹篱清居</span>
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-r from-bamboo-stone to-bamboo-ochre opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        </button>
       </div>
     </header>
   )
